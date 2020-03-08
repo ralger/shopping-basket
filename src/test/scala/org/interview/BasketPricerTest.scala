@@ -40,8 +40,9 @@ class BasketPricerTest extends FlatSpec with Matchers {
 
   it should "correctly look up the price from the shop" in {
     val result = BasketPricer.basketWithPrices(Basket(List("Widget")), widgetShop)
-    result.length shouldBe 1
-    result.head._3 shouldBe BigDecimal(10)
+    result.keys.size shouldBe 1
+    val (_, (_, itemPrice)) = result.head
+    itemPrice shouldBe BigDecimal(10)
   }
 
   it should "apply provided offer calculator" in {

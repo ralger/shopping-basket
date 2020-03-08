@@ -8,18 +8,18 @@ object BasketPricer {
     basket.items.keys.toList.filterNot(item => shop.itemExists(item))
   }
 
-  def basketWithPrices(basket: Basket, shop: Shop): List[(ItemId, ItemQuantity, ItemPrice)] = {
-    basket.items.toList.flatMap { case (itemName, itemQuantity) =>
-      shop.itemPrice(itemName).map(itemPrice => (itemName, itemQuantity, itemPrice))
-    }
+  def basketWithPrices(basket: Basket, shop: Shop): BasketWithPrices = {
+    basket.items.toList.flatMap { case (itemId, itemQuantity) =>
+      shop.itemPrice(itemId).map(itemPrice => itemId -> (itemQuantity, itemPrice))
+    }.toMap
   }
 
-  def priceBasketSubTotal(basketItemWithPrices: List[(ItemId, ItemQuantity, ItemPrice)]): BigDecimal = {
-    val lineTotals = basketItemWithPrices.map { case (_, itemQuantity, itemPrice) => itemPrice * itemQuantity }
+  def priceBasketSubTotal(basketItemWithPrices: BasketWithPrices): BigDecimal = {
+    val lineTotals = basketItemWithPrices.map { case (_, (itemQuantity, itemPrice)) => itemPrice * itemQuantity }
     lineTotals.sum
   }
 
-  def calculateOffers(basketItemWithPrices: List[(ItemId, ItemQuantity, ItemPrice)], offers: List[OfferCalculator]): List[AppliedOffer] = {
+  def calculateOffers(basketItemWithPrices: BasketWithPrices, offers: List[OfferCalculator]): List[AppliedOffer] = {
     offers.flatMap(offerCalculator => offerCalculator(basketItemWithPrices))
   }
 
