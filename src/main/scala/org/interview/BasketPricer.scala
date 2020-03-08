@@ -4,8 +4,6 @@ import org.interview.model._
 
 object BasketPricer {
 
-  type OfferCalculator = List[(ItemId, ItemQuantity, ItemPrice)] => List[AppliedOffer]
-
   def findMissingShopItems(basket: Basket, shop: Shop): List[ItemId] = {
     basket.items.keys.toList.filterNot(item => shop.itemExists(item))
   }

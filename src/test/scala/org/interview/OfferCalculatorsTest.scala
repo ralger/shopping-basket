@@ -1,6 +1,6 @@
 package org.interview
 
-import org.interview.BasketPricer.OfferCalculator
+import org.interview.OfferCalculator
 import org.interview.model._
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers

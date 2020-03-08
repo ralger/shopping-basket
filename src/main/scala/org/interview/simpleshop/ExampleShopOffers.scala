@@ -1,6 +1,6 @@
 package org.interview.simpleshop
 
-import org.interview.BasketPricer.OfferCalculator
+import org.interview.OfferCalculator
 import org.interview.OfferCalculators.{conditionalOnQuantityOffer, productPercentageDiscountOffer}
 
 /*
