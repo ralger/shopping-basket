@@ -13,6 +13,6 @@ import org.interview.OfferCalculators.{conditionalOnQuantityOffer, productPercen
 object ExampleShopOffers {
   val currentOffers: List[OfferCalculator] = List(
     productPercentageDiscountOffer("Apples", 0.1),
-    conditionalOnQuantityOffer(2, "Soup", productPercentageDiscountOffer("Bread", 0.5)),
+    conditionalOnQuantityOffer(2, "Soup", productPercentageDiscountOffer("Bread", 0.5, 1)),
   )
 }

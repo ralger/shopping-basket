@@ -9,6 +9,8 @@ import org.scalatest.Matchers
 class OfferCalculatorsTest extends FlatSpec with Matchers {
 
   val widgetTenPercentDiscountOffer: OfferCalculator = OfferCalculators.productPercentageDiscountOffer("Widget", 0.1)
+  val widgetTenPercentDiscountMaxOneOffer: OfferCalculator = OfferCalculators.productPercentageDiscountOffer("Widget", 0.1, 1)
+
 
   val fixedOfferCalculator : OfferCalculator = _ => List(AppliedOffer("Fixed Amount offer", 0.1))
   val fixedOfferWhenWidgetPuchased: OfferCalculator = OfferCalculators.conditionalOnQuantityOffer(1, "Widget", fixedOfferCalculator)
@@ -27,6 +29,13 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
     val result = widgetTenPercentDiscountOffer(basketItemsWithPrice)
     result.length shouldBe 1
     result.head.discountApplied shouldBe BigDecimal(0.8)
+  }
+
+  it should "respect the offer maximum quantity when calculating the discount" in {
+    val basketItemsWithPrice = Map("Widget" -> (2, BigDecimal(4)))
+    val result = widgetTenPercentDiscountMaxOneOffer(basketItemsWithPrice)
+    result.length shouldBe 1
+    result.head.discountApplied shouldBe BigDecimal(0.4)
   }
 
   "conditionalOnQuantityOffer" should "return zero applied offers when the item doesn't exist" in {

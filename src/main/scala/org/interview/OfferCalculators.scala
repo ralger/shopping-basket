@@ -7,14 +7,21 @@ object OfferCalculators {
 
   def productPercentageDiscountOffer(discountProductName: ItemId,
                                      discountPercentage : Double)(basketProducts: BasketWithPrices): List[AppliedOffer] = {
+    productPercentageDiscountOffer(discountProductName, discountPercentage, Int.MaxValue)(basketProducts)
+  }
+
+  def productPercentageDiscountOffer(discountProductName: ItemId,
+                                     discountPercentage : Double,
+                                     discountMaxQauntity: Int)(basketProducts: BasketWithPrices): List[AppliedOffer] = {
     basketProducts.get(discountProductName) match {
       case Some((itemQuantity, itemPrice)) => {
-        val discount = itemPrice * itemQuantity * discountPercentage
+        val discount = itemPrice * Math.min(itemQuantity, discountMaxQauntity) * discountPercentage
         AppliedOffer(f"$discountProductName ${discountPercentage * 100}%2.0f%% off", discount) :: Nil
       }
       case None => List()
     }
   }
+
 
   def conditionalOnQuantityOffer(conditionalQuantity: Int,
                                  conditionalProduct: ItemId,
