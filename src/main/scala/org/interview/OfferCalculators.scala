@@ -6,36 +6,31 @@ import org.interview.model._
 object OfferCalculators {
 
   def productPercentageDiscountOffer(discountProductName: ItemId,
-                                     discountPercentage : Double)(basketProducts: BasketWithPrices): List[AppliedOffer] = {
+                                     discountPercentage : Double)(basketProducts: BasketWithPrices): Option[BigDecimal] = {
     productPercentageDiscountOffer(discountProductName, discountPercentage, Int.MaxValue)(basketProducts)
   }
 
   def productPercentageDiscountOffer(discountProductName: ItemId,
                                      discountPercentage : Double,
-                                     discountMaxQauntity: Int)(basketProducts: BasketWithPrices): List[AppliedOffer] = {
-    basketProducts.get(discountProductName) match {
-      case Some((itemQuantity, itemPrice)) => {
-        val discount = itemPrice * Math.min(itemQuantity, discountMaxQauntity) * discountPercentage
-        AppliedOffer(f"$discountProductName ${discountPercentage * 100}%2.0f%% off", discount) :: Nil
-      }
-      case None => List()
+                                     discountMaxQauntity: Int)(basketProducts: BasketWithPrices): Option[BigDecimal] = {
+    basketProducts.get(discountProductName) map { case (itemQuantity, itemPrice) =>
+      itemPrice * Math.min(itemQuantity, discountMaxQauntity) * discountPercentage
     }
   }
 
-
   def conditionalOnQuantityOffer(conditionalQuantity: Int,
                                  conditionalProduct: ItemId,
-                                 conditionalOffer: OfferCalculator)(basketProducts: BasketWithPrices): List[AppliedOffer] = {
-    val conditionalOfferApplied = basketProducts.get(conditionalProduct) match {
-      case Some((itemQuantity, _)) => {
-        if (itemQuantity >= conditionalQuantity)
-          conditionalOffer(basketProducts)
-        else
-          List()
-      }
-      case None => List()
+                                 conditionalOffer: OfferCalculator)(basketProducts: BasketWithPrices): Option[BigDecimal] = {
+
+    basketProducts.get(conditionalProduct) flatMap { case (itemQuantity, _) =>
+      val conditionalOfferResult = if (itemQuantity >= conditionalQuantity)
+        Some(conditionalOffer(basketProducts))
+      else
+        None
+      conditionalOfferResult.flatten
     }
-    conditionalOfferApplied.map(offer => AppliedOffer(s"${offer.discountName} when buying $conditionalQuantity $conditionalProduct", offer.discountApplied))
+
+
   }
 
 

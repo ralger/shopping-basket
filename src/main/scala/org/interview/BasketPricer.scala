@@ -19,8 +19,10 @@ object BasketPricer {
     lineTotals.sum
   }
 
-  def calculateOffers(basketItemWithPrices: BasketWithPrices, offers: List[OfferCalculator]): List[AppliedOffer] = {
-    offers.flatMap(offerCalculator => offerCalculator(basketItemWithPrices))
+  def calculateOffers(basketItemWithPrices: BasketWithPrices, offers: Map[DiscountName, OfferCalculator]): List[AppliedOffer] = {
+    offers.toList.flatMap { case (discountName, offerCalculator) =>
+      offerCalculator(basketItemWithPrices).map(discount => AppliedOffer(discountName, discount))
+    }
   }
 
   def calculateTotalPrice(basketSubTotal: BigDecimal, offersApplied: List[AppliedOffer]): BigDecimal = {

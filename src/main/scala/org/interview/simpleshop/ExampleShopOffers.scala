@@ -1,6 +1,6 @@
 package org.interview.simpleshop
 
-import org.interview.OfferCalculator
+import org.interview.{DiscountName, OfferCalculator}
 import org.interview.OfferCalculators.{conditionalOnQuantityOffer, productPercentageDiscountOffer}
 
 /*
@@ -11,8 +11,8 @@ import org.interview.OfferCalculators.{conditionalOnQuantityOffer, productPercen
 
  */
 object ExampleShopOffers {
-  val currentOffers: List[OfferCalculator] = List(
-    productPercentageDiscountOffer("Apples", 0.1),
-    conditionalOnQuantityOffer(2, "Soup", productPercentageDiscountOffer("Bread", 0.5, 1)),
+  val currentOffers: Map[DiscountName, OfferCalculator] = Map(
+    "Apples 10% off" -> productPercentageDiscountOffer("Apples", 0.1),
+    "Bread half price with 2 tins of soup" -> conditionalOnQuantityOffer(2, "Soup", productPercentageDiscountOffer("Bread", 0.5, 1)),
   )
 }

@@ -46,10 +46,12 @@ class BasketPricerTest extends FlatSpec with Matchers {
   }
 
   it should "apply provided offer calculator" in {
-    val fixedOffer = List(AppliedOffer("Fixed Amount offer", 0.1))
-    val fixedOfferCalculator : OfferCalculator = _ => fixedOffer
-    val result = BasketPricer.calculateOffers(BasketPricer.basketWithPrices(emptyBasket, emptyShop), List(fixedOfferCalculator))
-    result shouldBe fixedOffer
+    val fixedOfferDiscount = BigDecimal(0.1)
+    val fixedOfferName = "Some Offer"
+    val fixedOfferCalculator : OfferCalculator = _ => Some(fixedOfferDiscount)
+    val result = BasketPricer.calculateOffers(BasketPricer.basketWithPrices(emptyBasket, emptyShop), Map(fixedOfferName -> fixedOfferCalculator))
+    result.size shouldBe 1
+    result.head shouldBe AppliedOffer(fixedOfferName, fixedOfferDiscount)
   }
 
 
