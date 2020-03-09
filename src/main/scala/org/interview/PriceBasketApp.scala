@@ -1,15 +1,15 @@
 package org.interview
 
 import org.interview.model._
-import org.interview.simpleshop.{ExampleShop, ExampleShopOffers}
+import org.interview.simpleshop.{ExampleShop, ExampleOfferBasketPricer}
 
 object PriceBasketApp extends App {
 
   val basket = Basket(args.toList)
-  val basketItemsWithPrices = BasketPricer.basketWithPrices(basket, ExampleShop)
-  val basketSubTotal = BasketPricer.priceBasketSubTotal(basketItemsWithPrices)
-  val offersApplied = BasketPricer.calculateOffers(basketItemsWithPrices, ExampleShopOffers.currentOffers)
-  val totalPrice = BasketPricer.calculateTotalPrice(basketSubTotal, offersApplied)
+  val basketItemsWithPrices = ExampleShop.basketPrices(basket)
+  val basketSubTotal = ExampleOfferBasketPricer.priceBasketSubTotal(basketItemsWithPrices)
+  val offersApplied = ExampleOfferBasketPricer.calculateOffers(basketItemsWithPrices)
+  val totalPrice = ExampleOfferBasketPricer.calculateTotalPrice(basketSubTotal, offersApplied)
 
 
   println(f"Subtotal: £$basketSubTotal%1.2f")
