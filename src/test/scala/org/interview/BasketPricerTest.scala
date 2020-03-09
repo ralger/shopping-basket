@@ -34,6 +34,16 @@ class BasketPricerTest extends FlatSpec with Matchers {
     resultFixedOffer shouldBe BigDecimal(0)
   }
 
+  it should "price a basket of items with the correct sub total" in {
+    val basket: BasketWithPrices = Map(
+      "ItemA" -> (1, BigDecimal(3.50)),
+      "ItemB" -> (2, BigDecimal(4.01)),
+      "ItemC" -> (4, BigDecimal(0.05))
+    )
+    val result = noOffersBasketPricer.priceBasketSubTotal(basket)
+    result shouldBe BigDecimal(11.72)
+  }
+
   // We test the calculateOffers using a mocked OfferCalculator so that we are only testing the method
   // and not indirectly testing functionality in the OfferCalculators object (which have their own tests)
   it should "apply provided offers" in {
