@@ -62,6 +62,15 @@ class BasketPricerTest extends FlatSpec with Matchers {
     result should be >= BigDecimal(0)
   }
 
+  it should "not allow an offer calculator to apply a negative discount" in {
+    val brokenOfferCalculator: OfferCalculator = _ => Some(BigDecimal(-10))
+    val brokenOfferCalculatorBasketPricer : BasketPricer = new BasketPricer {
+      override val offers: Map[DiscountName, OfferCalculator] = Map("Returns negative discount" -> brokenOfferCalculator)
+    }
+    val result = brokenOfferCalculatorBasketPricer.calculateOffers(emptyBasket)
+    result.length shouldBe 0
+  }
+
 
 
 

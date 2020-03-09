@@ -14,7 +14,7 @@ trait BasketPricer {
   def calculateOffers(basketItemWithPrices: BasketWithPrices): List[AppliedOffer] = {
     offers.toList.flatMap { case (discountName, offerCalculator) =>
       offerCalculator(basketItemWithPrices).map(discount => AppliedOffer(discountName, discount))
-    }
+    }.filter(appliedOffer => appliedOffer.discountApplied >= BigDecimal(0))
   }
 
   def calculateTotalPrice(basketSubTotal: BigDecimal, offersApplied: List[AppliedOffer]): BigDecimal = {
