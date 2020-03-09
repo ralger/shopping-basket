@@ -12,7 +12,7 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
   val widgetTenPercentDiscountMaxOneOffer: OfferCalculator = OfferCalculators.productPercentageDiscountOffer("Widget", 0.1, 1)
 
   val fixedOfferCalculator : OfferCalculator = _ => Some(BigDecimal(0.1))
-  val fixedOfferWhenWidgetPuchased: OfferCalculator = OfferCalculators.conditionalOnQuantityOffer(1, "Widget", fixedOfferCalculator)
+  val fixedOfferWhenTwoWidgetsPuchased: OfferCalculator = OfferCalculators.conditionalOnQuantityOffer(2, "Widget", fixedOfferCalculator)
 
   "productPercentageDiscountOffer" should "return zero applied offers when the item doesn't exist" in {
     val basketItemsWithPrice = Map("NotAWidget" -> (3, BigDecimal(1)))
@@ -49,13 +49,19 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
 
   "conditionalOnQuantityOffer" should "return zero applied offers when the item doesn't exist" in {
     val basketItemsWithPrice = Map("NotAWidget" -> (3, BigDecimal(1)))
-    val result = fixedOfferWhenWidgetPuchased(basketItemsWithPrice)
+    val result = fixedOfferWhenTwoWidgetsPuchased(basketItemsWithPrice)
+    result shouldBe None
+  }
+
+  it should "return zero applied offers when the item doesn't meet the minimum conditionalQuantity" in {
+    val basketItemsWithPrice = Map("Widget" -> (1, BigDecimal(1)))
+    val result = fixedOfferWhenTwoWidgetsPuchased(basketItemsWithPrice)
     result shouldBe None
   }
 
   it should "return the provided offer when the conditional Item and Quantity is met" in {
     val basketItemsWithPrice = Map("Widget" -> (3, BigDecimal(1)))
-    val result = fixedOfferWhenWidgetPuchased(basketItemsWithPrice)
+    val result = fixedOfferWhenTwoWidgetsPuchased(basketItemsWithPrice)
     result shouldBe Some(BigDecimal(0.1))
   }
 
@@ -63,5 +69,8 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
     an [IllegalArgumentException] should be thrownBy OfferCalculators.conditionalOnQuantityOffer(-2, "Widget", fixedOfferCalculator)(Map())
   }
 
+  it should "validate that conditionalQuantity is not zero" in {
+    an [IllegalArgumentException] should be thrownBy OfferCalculators.conditionalOnQuantityOffer(0, "Widget", fixedOfferCalculator)(Map())
+  }
 
 }
