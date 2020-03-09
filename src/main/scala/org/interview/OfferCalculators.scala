@@ -25,7 +25,7 @@ object OfferCalculators {
   def conditionalOnQuantityOffer(conditionalQuantity: Int,
                                  conditionalProduct: ItemId,
                                  conditionalOffer: OfferCalculator)(basketProducts: BasketWithPrices): Option[BigDecimal] = {
-    if (conditionalQuantity < 0)  throw new IllegalArgumentException("ConditionalQuantity can not be negative")
+    if (conditionalQuantity <= 0)  throw new IllegalArgumentException("ConditionalQuantity should be greater than 0")
 
     basketProducts.get(conditionalProduct) flatMap { case (itemQuantity, _) =>
       val conditionalOfferResult = if (itemQuantity >= conditionalQuantity)
