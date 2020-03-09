@@ -35,6 +35,18 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
     result shouldBe Some(BigDecimal(0.4))
   }
 
+  it should "validate that discountPercentage is not negative" in {
+    an [IllegalArgumentException] should be thrownBy OfferCalculators.productPercentageDiscountOffer("Widget", -0.1, 1)(Map())
+  }
+
+  it should "validate that discountPercentage is not more than 1" in {
+    an [IllegalArgumentException] should be thrownBy OfferCalculators.productPercentageDiscountOffer("Widget", 2, 1)(Map())
+  }
+
+  it should "validate that discountMaxQuantity is not negative" in {
+    an [IllegalArgumentException] should be thrownBy OfferCalculators.productPercentageDiscountOffer("Widget", 0.1, -1)(Map())
+  }
+
   "conditionalOnQuantityOffer" should "return zero applied offers when the item doesn't exist" in {
     val basketItemsWithPrice = Map("NotAWidget" -> (3, BigDecimal(1)))
     val result = fixedOfferWhenWidgetPuchased(basketItemsWithPrice)
@@ -45,6 +57,10 @@ class OfferCalculatorsTest extends FlatSpec with Matchers {
     val basketItemsWithPrice = Map("Widget" -> (3, BigDecimal(1)))
     val result = fixedOfferWhenWidgetPuchased(basketItemsWithPrice)
     result shouldBe Some(BigDecimal(0.1))
+  }
+
+  it should "validate that conditionalQuantity is not negative" in {
+    an [IllegalArgumentException] should be thrownBy OfferCalculators.conditionalOnQuantityOffer(-2, "Widget", fixedOfferCalculator)(Map())
   }
 
 
