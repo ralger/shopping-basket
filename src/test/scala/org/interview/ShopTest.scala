@@ -23,18 +23,24 @@ class ShopTest extends FlatSpec with Matchers  {
     result.sorted shouldBe basketItems.sorted
   }
 
+  it should "return an empty priced basket when passed no items to price" in {
+    val basketItems = List()
+    val result = widgetShop.findBasketItemsNotStocked(Basket(basketItems))
+    result.size shouldBe 0
+  }
+
   it should "price a basket of items" in {
     val basketItems = List(WIDGET_ITEM)
     val result = widgetShop.basketPrices(Basket(basketItems))
-    result.keys.toList shouldBe basketItems
+    result.size shouldBe 1
+    result.head shouldBe (WIDGET_ITEM, (1, BigDecimal(10)))
   }
 
   it should "not price items that don't exist in the shop" in {
-    val basketItems = List(WIDGET_ITEM, "SomeWidget")
+    val itemNotInShop = "SomeWidget"
+    val basketItems = List(WIDGET_ITEM, itemNotInShop)
     val result = widgetShop.basketPrices(Basket(basketItems))
-    result.size shouldBe 1
-
+    result.get(itemNotInShop) shouldBe None
   }
-
 
 }
