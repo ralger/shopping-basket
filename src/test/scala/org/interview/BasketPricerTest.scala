@@ -71,6 +71,14 @@ class BasketPricerTest extends FlatSpec with Matchers {
     result.length shouldBe 0
   }
 
+  it should "not allow a basket with zero or negative item quantities" in {
+    an [IllegalArgumentException] should be thrownBy fixedOfferBasketPricer.priceBasketSubTotal(Map("Widget" -> (-5, BigDecimal(10))))
+    an [IllegalArgumentException] should be thrownBy fixedOfferBasketPricer.priceBasketSubTotal(Map("Widget" -> (0, BigDecimal(10))))
+
+    an [IllegalArgumentException] should be thrownBy fixedOfferBasketPricer.calculateOffers(Map("Widget" -> (-5, BigDecimal(10))))
+    an [IllegalArgumentException] should be thrownBy fixedOfferBasketPricer.calculateOffers(Map("Widget" -> (0, BigDecimal(10))))
+  }
+
 
 
 
